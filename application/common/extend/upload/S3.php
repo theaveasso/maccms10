@@ -10,7 +10,8 @@ class S3
     public $ver = '1.0';
     private $config = [];
 
-    public function __construct($config = []) {
+    public function __construct($config = [])
+    {
         $this->config = $config;
     }
 
@@ -23,10 +24,10 @@ class S3
 
         require_once ROOT_PATH . 'extend/aws/autoload.php';
         $s3 = new S3Client([
-            'region'  => $region,
+            'region' => $region,
             'version' => '2006-03-01',
             'credentials' => [
-                'key'    => $accessKey,
+                'key' => $accessKey,
                 'secret' => $secretKey
             ]
         ]);
@@ -34,15 +35,15 @@ class S3
             $filePath = ROOT_PATH . $file_path;
             $result = $s3->putObject([
                 'Bucket' => $bucket,
-                'Key'    => $file_path,
-                'Body'   => fopen($filePath, 'r'),
-                'ACL'    => 'public-read'
+                'Key' => $file_path,
+                'Body' => fopen($filePath, 'r'),
+                'ACL' => 'public-read-write'
             ]);
         } catch (AwsException $e) {
             echo $e->getMessage() . "\n";
         }
 
         empty($this->config['keep_local']) && @unlink($filePath);
-        return $result['ObjectURL'];
+        return 'https://assets.ktv183.com/' . $file_path;
     }
 }
